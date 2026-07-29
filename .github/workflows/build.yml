@@ -27,6 +27,11 @@ jobs:
             sudo xcode-select -s /Applications/Xcode_16.2.app
           fi
 
+      - name: Fix ChOma include symlink
+        run: |
+          rm -rf darksword-kexploit-fun/XPF/external/ChOma/include/choma
+          ln -sf ../src darksword-kexploit-fun/XPF/external/ChOma/include/choma
+
       - name: Show Xcode Version
         run: |
           xcodebuild -version
