@@ -29,4 +29,18 @@ jobs:
                      CODE_SIGNING_REQUIRED=NO \
                      CODE_SIGNING_ALLOWED=NO \
                      -configuration Release \
+                     -derivedDataPath build/DerivedData \
                      clean build
+
+      - name: Package App into IPA
+        run: |
+          mkdir -p build/Payload
+          cp -r build/DerivedData/Build/Products/Release-iphoneos/*.app build/Payload/
+          cd build
+          zip -r darksword-kexploit-fun.ipa Payload
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: darksword-kexploit-fun-ipa
+          path: build/darksword-kexploit-fun.ipa
