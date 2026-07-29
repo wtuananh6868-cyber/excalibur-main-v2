@@ -31,10 +31,17 @@ jobs:
             sudo xcode-select -s /Applications/Xcode_16.0.app
           fi
 
+      - name: Install ldid
+        run: brew install ldid
+
       - name: Fix ChOma include symlink
         run: |
           rm -rf darksword-kexploit-fun/XPF/external/ChOma/include/choma
           ln -sf ../src darksword-kexploit-fun/XPF/external/ChOma/include/choma
+
+      - name: Build XPF Library
+        run: |
+          make -C darksword-kexploit-fun/XPF output/ios/libxpf.dylib
 
       - name: Show Xcode Version
         run: |
