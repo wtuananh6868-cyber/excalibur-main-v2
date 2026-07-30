@@ -1,0 +1,30 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Payload and Package IPA
+        run: |
+          echo "Building iOS App Bundle Payload..."
+          mkdir -p Payload/darksword-kexploit-fun.app
+          cp -R darksword-kexploit-fun/* Payload/darksword-kexploit-fun.app/
+          echo "Packaging excalibur-main-v2.ipa..."
+          zip -r excalibur-main-v2.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: excalibur-main-v2-ipa
+          path: excalibur-main-v2.ipa
