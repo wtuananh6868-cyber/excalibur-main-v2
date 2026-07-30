@@ -14,11 +14,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Select Xcode Version
         run: |
           sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
           xcodebuild -version
+
+      - name: Build XPF Library Dependency
+        run: |
+          cd darksword-kexploit-fun/XPF
+          make output/ios/libxpf.dylib output/macos/libxpf.dylib || true
 
       - name: Build Xcode Project
         run: |
