@@ -22,6 +22,10 @@ jobs:
           sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
           xcodebuild -version
 
+      - name: Install Dependencies (ldid)
+        run: |
+          brew install ldid || true
+
       - name: Build XPF Library Dependency
         run: |
           cd darksword-kexploit-fun/XPF
