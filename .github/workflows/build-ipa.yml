@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build iOS IPA (Xcode Compile)
 
 on:
   push:
@@ -9,18 +9,39 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Payload and Package IPA
+      - name: Select Xcode Version
         run: |
-          echo "Building iOS App Bundle Payload..."
-          mkdir -p Payload/darksword-kexploit-fun.app
-          cp -R darksword-kexploit-fun/* Payload/darksword-kexploit-fun.app/
-          echo "Packaging excalibur-main-v2.ipa..."
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Build Xcode Project
+        run: |
+          xcodebuild build \
+            -project darksword-kexploit-fun.xcodeproj \
+            -target "darksword-kexploit-fun" \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          APP_PATH=$(find build/Build/Products/Release-iphoneos -name "*.app" | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: Compiled .app bundle not found!"
+            exit 1
+          fi
+          echo "Found compiled app at: $APP_PATH"
+          cp -R "$APP_PATH" Payload/
           zip -r excalibur-main-v2.ipa Payload
 
       - name: Upload IPA Artifact
